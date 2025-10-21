@@ -7,18 +7,10 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: production
-      - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: social-db
-          property: connectionString
-      - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: social-db
-          property: user
-      - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: social-db
-          property: password
+      # Database credentials will be set in Render dashboard
+      # SPRING_DATASOURCE_URL
+      # SPRING_DATASOURCE_USERNAME  
+      # SPRING_DATASOURCE_PASSWORD
 
   - type: web
     name: bharat-social-frontend
@@ -32,7 +24,3 @@ services:
           name: bharat-social-backend
           property: host
 
-databases:
-  - name: social-db
-    plan: free
-    databaseName: social
