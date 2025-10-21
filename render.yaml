@@ -1,10 +1,9 @@
 services:
   - type: web
     name: bharat-social-backend
-    env: java
+    env: docker
     plan: free
-    buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/bharat-social-media-backend-1.0.0.jar
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: production
@@ -20,6 +19,18 @@ services:
         fromDatabase:
           name: social-db
           property: password
+
+  - type: web
+    name: bharat-social-frontend
+    env: docker
+    plan: free
+    dockerfilePath: ./client/Dockerfile
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: bharat-social-backend
+          property: host
 
 databases:
   - name: social-db
