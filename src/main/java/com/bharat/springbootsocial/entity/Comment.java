@@ -26,6 +26,10 @@ public class Comment {
     @JsonIgnoreProperties({"savedPosts", "following", "followers"})
     private User user;
 
+    @ManyToOne
+    @JsonIgnoreProperties({"comments", "likedBy"})
+    private Post post;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "comments_liked_by", 
