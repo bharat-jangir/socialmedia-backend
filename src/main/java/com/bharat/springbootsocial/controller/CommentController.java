@@ -19,7 +19,6 @@ import java.util.UUID;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/comments")
-@CrossOrigin(origins = "http://localhost:5173")
 public class CommentController {
     @Autowired
     private CommentServices commentServices;

@@ -47,10 +47,10 @@ public class AppConfig {
                     "https://bharat-social-media.vercel.app",
                     "https://bharat-social-media-git-main.vercel.app"
                 ));
-                cfg.setAllowedMethods(Collections.singletonList("*"));
+                cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
                 cfg.setAllowCredentials(true);
-                cfg.setAllowedHeaders(Collections.singletonList("*"));
-                cfg.setExposedHeaders(Arrays.asList("Authorization"));
+                cfg.setAllowedHeaders(Arrays.asList("*"));
+                cfg.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
                 cfg.setMaxAge(3600L);
 
                 return cfg;

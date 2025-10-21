@@ -23,7 +23,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/reels")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "https://socialmedia-frontend-l78j.onrender.com"})
 public class ReelsController {
     @Autowired
     private ReelsService reelsService;
