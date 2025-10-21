@@ -166,9 +166,16 @@ public class UserServices implements ServiceInt {
 
     @Override
     public User getUserFromToken(String jwt) {
-        String email = JwtProvider.getEmailFromJwtToken(jwt);
-        User user = findUserByEmail(email);
-        return user;
+        try {
+            String email = JwtProvider.getEmailFromJwtToken(jwt);
+            User user = findUserByEmail(email);
+            if (user == null) {
+                throw new IllegalArgumentException("User not found for email: " + email);
+            }
+            return user;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JWT token: " + e.getMessage());
+        }
     }
 
     @Override
