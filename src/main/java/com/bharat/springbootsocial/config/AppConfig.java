@@ -43,7 +43,7 @@ public class AppConfig {
                 CorsConfiguration cfg = new CorsConfiguration();
                 cfg.setAllowedOrigins(Arrays.asList(
                     "http://localhost:5173",
-                    "https://bharat-social-frontend.onrender.com",
+                    "https://socialmedia-frontend-l78j.onrender.com",
                     "https://bharat-social-media.vercel.app",
                     "https://bharat-social-media-git-main.vercel.app"
                 ));
