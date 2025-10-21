@@ -41,7 +41,11 @@ public class AppConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration cfg = new CorsConfiguration();
-                cfg.setAllowedOrigins(Arrays.asList("http://localhost:5173/"));
+                cfg.setAllowedOrigins(Arrays.asList(
+                    "http://localhost:5173",
+                    "https://bharat-social-media.vercel.app",
+                    "https://bharat-social-media-git-main.vercel.app"
+                ));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
                 cfg.setAllowedHeaders(Collections.singletonList("*"));
