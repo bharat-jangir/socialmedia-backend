@@ -23,4 +23,6 @@ services:
           type: web
           name: bharat-social-backend
           property: host
+    # Add health check for better deployment reliability
+    healthCheckPath: /
 
