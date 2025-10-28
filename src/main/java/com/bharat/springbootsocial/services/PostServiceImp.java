@@ -252,22 +252,26 @@ public class PostServiceImp implements PostService {
     
     @Override
     public PaginatedResponse<PostResponse> findAllPostsOptimizedPaginated(UUID currentUserId, int page, int size) throws Exception {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Post> postPage = postRepo.findAllPostsPaginated(pageable);
-        
-        List<PostResponse> optimizedPosts = convertToOptimizedResponse(postPage.getContent(), currentUserId);
-        
-        PaginatedResponse<PostResponse> response = new PaginatedResponse<>();
-        response.setContent(optimizedPosts);
-        response.setPage(postPage.getNumber());
-        response.setSize(postPage.getSize());
-        response.setTotalElements(postPage.getTotalElements());
-        response.setTotalPages(postPage.getTotalPages());
-        response.setHasNext(postPage.hasNext());
-        response.setHasPrevious(postPage.hasPrevious());
-        response.setFirst(postPage.isFirst());
-        response.setLast(postPage.isLast());
-        return response;
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Post> postPage = postRepo.findAllPostsPaginated(pageable);
+            
+            List<PostResponse> optimizedPosts = convertToOptimizedResponse(postPage.getContent(), currentUserId);
+            
+            PaginatedResponse<PostResponse> response = new PaginatedResponse<>();
+            response.setContent(optimizedPosts);
+            response.setPage(postPage.getNumber());
+            response.setSize(postPage.getSize());
+            response.setTotalElements(postPage.getTotalElements());
+            response.setTotalPages(postPage.getTotalPages());
+            response.setHasNext(postPage.hasNext());
+            response.setHasPrevious(postPage.hasPrevious());
+            response.setFirst(postPage.isFirst());
+            response.setLast(postPage.isLast());
+            return response;
+        } catch (Exception e) {
+            throw new Exception("Error fetching optimized posts feed: " + e.getMessage(), e);
+        }
     }
     
     @Override
