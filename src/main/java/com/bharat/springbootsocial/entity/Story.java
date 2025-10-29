@@ -25,7 +25,7 @@ public class Story {
     private UUID id;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     private User user;
     
     @Column(name = "image_url")
@@ -56,8 +56,8 @@ public class Story {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "story_views",
-        joinColumns = @JoinColumn(name = "story_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id")
+        joinColumns = @JoinColumn(name = "story_id", columnDefinition = "BINARY(16)"),
+        inverseJoinColumns = @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     )
     @JsonIgnore
     private List<User> viewedBy = new ArrayList<>();
@@ -65,8 +65,8 @@ public class Story {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "story_likes",
-        joinColumns = @JoinColumn(name = "story_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id")
+        joinColumns = @JoinColumn(name = "story_id", columnDefinition = "BINARY(16)"),
+        inverseJoinColumns = @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     )
     @JsonIgnore
     private List<User> likedBy = new ArrayList<>();

@@ -28,7 +28,7 @@ public class StoryReply {
     private Story story;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     private User user;
     
     @Column(name = "reply_text", length = 500)

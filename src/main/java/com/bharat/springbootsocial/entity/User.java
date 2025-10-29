@@ -43,8 +43,8 @@ public class User {
     @ManyToMany // Many users can save many posts
     @JoinTable(
         name = "users_saved_posts",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "post_id")
+        joinColumns = @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)"),
+        inverseJoinColumns = @JoinColumn(name = "post_id", columnDefinition = "BINARY(16)")
     )
     @JsonIgnore
     private List<Post> savedPosts = new ArrayList<>();
@@ -52,8 +52,8 @@ public class User {
     @ManyToMany // Many users can save many reels
     @JoinTable(
         name = "users_saved_reels",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "reel_id")
+        joinColumns = @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)"),
+        inverseJoinColumns = @JoinColumn(name = "reel_id", columnDefinition = "BINARY(16)")
     )
     @JsonIgnore
     private List<Reels> savedReels = new ArrayList<>();

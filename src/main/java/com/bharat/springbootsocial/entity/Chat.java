@@ -26,8 +26,8 @@ public class Chat {
     @ManyToMany
     @JoinTable(
         name = "chats_users",
-        joinColumns = @JoinColumn(name = "chats_id"),
-        inverseJoinColumns = @JoinColumn(name = "users_id")
+        joinColumns = @JoinColumn(name = "chats_id", columnDefinition = "BINARY(16)"),
+        inverseJoinColumns = @JoinColumn(name = "users_id", columnDefinition = "BINARY(16)")
     )
     private List<User> users = new ArrayList<>();
     @OneToMany(mappedBy = "chat")

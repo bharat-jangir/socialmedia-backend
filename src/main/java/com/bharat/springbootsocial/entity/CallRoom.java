@@ -54,8 +54,8 @@ public class CallRoom {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "call_room_participants",
-        joinColumns = @JoinColumn(name = "room_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id")
+        joinColumns = @JoinColumn(name = "room_id", columnDefinition = "BINARY(16)"),
+        inverseJoinColumns = @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     )
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<User> participants = new ArrayList<>();

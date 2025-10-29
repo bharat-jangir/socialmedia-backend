@@ -30,8 +30,8 @@ public class Post {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "posts_liked_by", 
-        joinColumns = @JoinColumn(name = "posts_id"), 
-        inverseJoinColumns = @JoinColumn(name = "liked_by_id")
+        joinColumns = @JoinColumn(name = "posts_id", columnDefinition = "BINARY(16)"), 
+        inverseJoinColumns = @JoinColumn(name = "liked_by_id", columnDefinition = "BINARY(16)")
     )
     @JsonIgnoreProperties({"savedPosts", "following", "followers", "likedPosts"})
     private List<User> likedBy = new ArrayList<>();

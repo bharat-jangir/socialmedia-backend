@@ -29,16 +29,16 @@ public class Reels {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "reels_liked_by", 
-        joinColumns = @JoinColumn(name = "reels_id"), 
-        inverseJoinColumns = @JoinColumn(name = "liked_by_id")
+        joinColumns = @JoinColumn(name = "reels_id", columnDefinition = "BINARY(16)"), 
+        inverseJoinColumns = @JoinColumn(name = "liked_by_id", columnDefinition = "BINARY(16)")
     )
     @JsonIgnoreProperties({"savedPosts", "following", "followers", "likedPosts"})
     private List<User> likedBy = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinTable(
         name = "reels_comments",
-        joinColumns = @JoinColumn(name = "reels_id"),
-        inverseJoinColumns = @JoinColumn(name = "comments_id")
+        joinColumns = @JoinColumn(name = "reels_id", columnDefinition = "BINARY(16)"),
+        inverseJoinColumns = @JoinColumn(name = "comments_id", columnDefinition = "BINARY(16)")
     )
     @JsonIgnoreProperties({"user"})
     private List<Comment> comments = new ArrayList<>();
