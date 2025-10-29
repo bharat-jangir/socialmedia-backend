@@ -47,8 +47,8 @@ public class GroupMessageResponse {
         private String profileImage;
         private String coverImage;
         private String userBio;
-        private List<UUID> following;
-        private List<UUID> followers;
+        private List<String> following;
+        private List<String> followers;
     }
     
     @Data

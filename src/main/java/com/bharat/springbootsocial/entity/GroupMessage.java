@@ -22,6 +22,7 @@ public class GroupMessage {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
     
     @Column(nullable = false, length = 2000)

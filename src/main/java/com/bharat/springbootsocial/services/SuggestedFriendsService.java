@@ -124,7 +124,9 @@ public class SuggestedFriendsService {
     private Set<UUID> getCurrentUserFollowing(UUID userId) {
         User user = userRepo.findById(userId).orElse(null);
         if (user != null && user.getFollowing() != null) {
-            return new HashSet<>(user.getFollowing());
+            return user.getFollowing().stream()
+                    .map(UUID::fromString)
+                    .collect(Collectors.toSet());
         }
         return new HashSet<>();
     }
@@ -135,7 +137,9 @@ public class SuggestedFriendsService {
     private Set<UUID> getCurrentUserFollowers(UUID userId) {
         User user = userRepo.findById(userId).orElse(null);
         if (user != null && user.getFollowers() != null) {
-            return new HashSet<>(user.getFollowers());
+            return user.getFollowers().stream()
+                    .map(UUID::fromString)
+                    .collect(Collectors.toSet());
         }
         return new HashSet<>();
     }

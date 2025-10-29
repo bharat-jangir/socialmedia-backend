@@ -20,6 +20,7 @@ public class CallSession {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
     
     @Column(name = "session_id", unique = true, nullable = false)

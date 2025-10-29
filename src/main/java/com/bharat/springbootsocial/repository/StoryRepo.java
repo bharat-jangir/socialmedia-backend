@@ -23,11 +23,11 @@ public interface StoryRepo extends JpaRepository<Story, UUID> {
     
     // Find stories from users that the current user follows
     @Query("SELECT s FROM Story s WHERE s.user.id IN :followingIds AND s.isActive = true AND s.expiresAt > :now ORDER BY s.createdAt DESC")
-    List<Story> findActiveStoriesFromFollowing(@Param("followingIds") List<UUID> followingIds, @Param("now") LocalDateTime now);
+    List<Story> findActiveStoriesFromFollowing(@Param("followingIds") List<String> followingIds, @Param("now") LocalDateTime now);
     
     // Find paginated stories from users that the current user follows
     @Query("SELECT s FROM Story s WHERE s.user.id IN :followingIds AND s.isActive = true AND s.expiresAt > :now ORDER BY s.createdAt DESC")
-    Page<Story> findActiveStoriesFromFollowingPaginated(@Param("followingIds") List<UUID> followingIds, @Param("now") LocalDateTime now, Pageable pageable);
+    Page<Story> findActiveStoriesFromFollowingPaginated(@Param("followingIds") List<String> followingIds, @Param("now") LocalDateTime now, Pageable pageable);
     
     // Find expired stories for cleanup
     @Query("SELECT s FROM Story s WHERE s.expiresAt <= :now AND s.isActive = true")

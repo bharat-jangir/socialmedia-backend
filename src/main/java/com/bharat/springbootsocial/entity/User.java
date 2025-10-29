@@ -21,6 +21,7 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
     @Column(name = "first_name")
     private String fname;
@@ -37,8 +38,8 @@ public class User {
     @Column(name = "user_bio", length = 500)
     private String userBio;
 
-    private List<UUID> following = new ArrayList<>();
-    private List<UUID> followers = new ArrayList<>();
+    private List<String> following = new ArrayList<>();
+    private List<String> followers = new ArrayList<>();
     @ManyToMany // Many users can save many posts
     @JoinTable(
         name = "users_saved_posts",

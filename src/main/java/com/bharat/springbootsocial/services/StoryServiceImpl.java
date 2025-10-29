@@ -86,7 +86,7 @@ public class StoryServiceImpl implements StoryService {
     
     @Override
     public List<UserStoryResponse> getStoriesFromFollowing(User currentUser) {
-        List<UUID> followingIds = currentUser.getFollowing();
+        List<String> followingIds = currentUser.getFollowing();
         if (followingIds.isEmpty()) {
             return new ArrayList<>();
         }
@@ -126,7 +126,7 @@ public class StoryServiceImpl implements StoryService {
     
     @Override
     public PaginatedStoryResponse getStoriesFromFollowingPaginated(User currentUser, Pageable pageable) {
-        List<UUID> followingIds = currentUser.getFollowing();
+        List<String> followingIds = currentUser.getFollowing();
         if (followingIds.isEmpty()) {
             return new PaginatedStoryResponse();
         }

@@ -97,9 +97,9 @@ public class UserServices implements ServiceInt {
         User reqUser = getUserById(reqUserId);
         User user2 = getUserById(id2);
 
-        if (!reqUser.getFollowing().contains(id2)) {
-            user2.getFollowers().add(reqUser.getId());
-            reqUser.getFollowing().add(user2.getId());
+        if (!reqUser.getFollowing().contains(id2.toString())) {
+            user2.getFollowers().add(reqUser.getId().toString());
+            reqUser.getFollowing().add(user2.getId().toString());
 
             userRepo.save(reqUser);
             userRepo.save(user2);
@@ -116,9 +116,9 @@ public class UserServices implements ServiceInt {
         User reqUser = getUserById(reqUserId);
         User user2 = getUserById(id2);
 
-        if (reqUser.getFollowing().contains(id2)) {
-            user2.getFollowers().remove(reqUser.getId());
-            reqUser.getFollowing().remove(user2.getId());
+        if (reqUser.getFollowing().contains(id2.toString())) {
+            user2.getFollowers().remove(reqUser.getId().toString());
+            reqUser.getFollowing().remove(user2.getId().toString());
 
             userRepo.save(reqUser);
             userRepo.save(user2);
@@ -130,14 +130,14 @@ public class UserServices implements ServiceInt {
     @Override
     public boolean isFollowing(UUID id1, UUID id2) throws UserException {
         User user1 = getUserById(id1);
-        return user1.getFollowing().contains(id2);
+        return user1.getFollowing().contains(id2.toString());
     }
 
     @Override
     public List<User> getFollowers(UUID userId) {
         User user = getUserById(userId);
         return user.getFollowers().stream()
-                .map(this::getUserById)
+                .map(id -> getUserById(UUID.fromString(id)))
                 .toList();
     }
 
@@ -145,7 +145,7 @@ public class UserServices implements ServiceInt {
     public List<User> getFollowing(UUID userId) {
         User user = getUserById(userId);
         return user.getFollowing().stream()
-                .map(this::getUserById)
+                .map(id -> getUserById(UUID.fromString(id)))
                 .toList();
     }
 
