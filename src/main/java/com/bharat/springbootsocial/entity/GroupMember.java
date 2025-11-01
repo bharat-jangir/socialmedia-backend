@@ -23,7 +23,7 @@ public class GroupMember {
     private UUID id;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Group group;
     

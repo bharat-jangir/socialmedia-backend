@@ -39,7 +39,7 @@ public class CallRoom {
     private String roomName;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
+    @JoinColumn(name = "created_by", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User createdBy;
     

@@ -23,7 +23,7 @@ public class StoryReply {
     private UUID id;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "story_id")
+    @JoinColumn(name = "story_id", columnDefinition = "BINARY(16)")
     @JsonIgnore
     private Story story;
     

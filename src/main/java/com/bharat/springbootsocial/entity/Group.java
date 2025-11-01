@@ -38,12 +38,12 @@ public class Group {
     private String groupCoverImage;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
+    @JoinColumn(name = "created_by", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User createdBy;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id", nullable = false)
+    @JoinColumn(name = "admin_id", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User admin;
     

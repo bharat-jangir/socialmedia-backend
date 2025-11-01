@@ -27,7 +27,7 @@ public class GroupCallSession {
     private String sessionId;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_call_room_id", nullable = false)
+    @JoinColumn(name = "group_call_room_id", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private GroupCallRoom groupCallRoom;
     

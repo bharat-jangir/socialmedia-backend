@@ -23,7 +23,7 @@ public class CallParticipant {
     private UUID id;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "call_room_id", nullable = false)
+    @JoinColumn(name = "call_room_id", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CallRoom callRoom;
     

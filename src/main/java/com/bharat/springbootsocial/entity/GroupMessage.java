@@ -48,17 +48,17 @@ public class GroupMessage {
     private Long fileSize;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", nullable = false)
+    @JoinColumn(name = "sender_id", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User sender;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnore
     private Group group;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reply_to_id")
+    @JoinColumn(name = "reply_to_id", columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private GroupMessage replyTo;
     

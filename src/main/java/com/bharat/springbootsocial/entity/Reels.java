@@ -23,7 +23,8 @@ public class Reels {
     private UUID id;
     private String title;
     private String video;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"savedPosts", "following", "followers"})
     private User user;
     @ManyToMany(fetch = FetchType.LAZY)
@@ -34,13 +35,8 @@ public class Reels {
     )
     @JsonIgnoreProperties({"savedPosts", "following", "followers", "likedPosts"})
     private List<User> likedBy = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "reels_comments",
-        joinColumns = @JoinColumn(name = "reels_id", columnDefinition = "BINARY(16)"),
-        inverseJoinColumns = @JoinColumn(name = "comments_id", columnDefinition = "BINARY(16)")
-    )
-    @JsonIgnoreProperties({"user"})
+    @OneToMany(mappedBy = "reel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"user", "post", "reel"})
     private List<Comment> comments = new ArrayList<>();
     private LocalDateTime createdAt;
 }

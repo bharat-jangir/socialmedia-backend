@@ -22,11 +22,11 @@ public class Notification {
     private UUID id;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipient_id")
+    @JoinColumn(name = "recipient_id", nullable = false, columnDefinition = "BINARY(16)")
     private User recipient;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id")
+    @JoinColumn(name = "sender_id", columnDefinition = "BINARY(16)")
     private User sender;
     
     @Column(name = "type", length = 50)

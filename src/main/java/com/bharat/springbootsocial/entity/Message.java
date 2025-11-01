@@ -54,11 +54,11 @@ public class Message {
     
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_id", nullable = false)
+    @JoinColumn(name = "chat_id", nullable = false, columnDefinition = "BINARY(16)")
     private Chat chat;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reply_to_id")
+    @JoinColumn(name = "reply_to_id", columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Message replyTo;
     

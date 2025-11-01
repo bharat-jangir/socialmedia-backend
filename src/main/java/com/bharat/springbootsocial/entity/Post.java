@@ -24,7 +24,8 @@ public class Post {
     private String caption;
     private String image;
     private String video;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"savedPosts", "following", "followers"})
     private User user;
     @ManyToMany(fetch = FetchType.LAZY)

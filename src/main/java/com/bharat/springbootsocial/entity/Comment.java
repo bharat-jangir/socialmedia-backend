@@ -23,13 +23,20 @@ public class Comment {
     private UUID id;
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"savedPosts", "following", "followers"})
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"comments", "likedBy"})
     private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reel_id", columnDefinition = "BINARY(16)")
+    @JsonIgnoreProperties({"comments", "likedBy"})
+    private Reels reel;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

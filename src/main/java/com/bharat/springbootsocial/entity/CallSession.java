@@ -27,12 +27,9 @@ public class CallSession {
     private String sessionId;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(name = "room_id", nullable = false, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CallRoom room;
-    
-    @Column(name = "call_room_id", nullable = false)
-    private UUID callRoomId;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)")
@@ -84,9 +81,6 @@ public class CallSession {
         }
         if (sessionId == null) {
             sessionId = generateSessionId();
-        }
-        if (callRoomId == null && room != null) {
-            callRoomId = room.getId();
         }
     }
     
