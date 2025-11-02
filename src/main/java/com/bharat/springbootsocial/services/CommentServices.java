@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CommentServices {
-    Comment createComment(Comment comment, UUID postId, UUID userId) throws Exception;
+    Comment createComment(Comment comment, UUID postId, UUID userId, UUID reelId) throws Exception;
 
     Comment findCommentById(UUID commentId) throws Exception;
 

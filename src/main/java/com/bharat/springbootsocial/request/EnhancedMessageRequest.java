@@ -21,6 +21,8 @@ public class EnhancedMessageRequest {
     private Message.MessageType messageType;
     private UUID chatId;
     private UUID replyToId; // For replying to a message
+    private UUID messageId; // For edit/delete actions
+    private String action; // "send", "edit", "delete"
     
     // Optional: if not provided, will be extracted from JWT token
     private UUID userId;

@@ -19,7 +19,9 @@ import java.util.UUID;
 public interface ChatService {
     Chat createChat(User reqUser, User user2);
     Chat getChatById(UUID chatId) throws ChatException;
+    Chat getChatByIdWithUsers(UUID chatId) throws ChatException;
     List<Chat> getChatsByUserId(UUID userId);
+    void deleteChat(UUID chatId, User user) throws ChatException;
     
     // Enhanced message operations
     EnhancedMessageResponse sendMessage(EnhancedMessageRequest request, User user) throws ChatException;

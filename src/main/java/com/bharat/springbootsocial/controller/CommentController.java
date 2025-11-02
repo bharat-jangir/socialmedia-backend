@@ -2,18 +2,19 @@ package com.bharat.springbootsocial.controller;
 
 import com.bharat.springbootsocial.entity.Comment;
 import com.bharat.springbootsocial.entity.User;
-import java.util.UUID;
 import com.bharat.springbootsocial.response.ApiResponse;
 import com.bharat.springbootsocial.response.CommentResponse;
 import com.bharat.springbootsocial.services.CommentServices;
 import com.bharat.springbootsocial.services.ServiceInt;
 import lombok.AllArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -26,10 +27,24 @@ public class CommentController {
     private ServiceInt userService;
 
     @PostMapping("post/{postId}")
-    public ResponseEntity<CommentResponse> createComment(@RequestBody Comment comment,
-            @RequestHeader("Authorization") String jwt, @PathVariable("postId") UUID postId) throws Exception {
+    public ResponseEntity<CommentResponse> createComment(
+            @RequestBody Map<String, String> payload,
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable("postId") UUID postId) throws Exception {
+        System.out.println("Creating comment for post: " + postId);
+        
+        String content = payload.get("content");
+        if (content == null || content.trim().isEmpty()) {
+            throw new Exception("Comment content is required");
+        }
+        
         User user = userService.getUserFromToken(jwt);
-        Comment createdComment = commentServices.createComment(comment, postId, user.getId());
+        
+        // Create a new Comment object instead of using the one from request body
+        Comment comment = new Comment();
+        comment.setContent(content);
+        
+        Comment createdComment = commentServices.createComment(comment, postId, user.getId(), null);
         
         // Convert to CommentResponse with totalLikes and isLiked
         CommentResponse commentResponse = convertToCommentResponse(createdComment, user.getId());

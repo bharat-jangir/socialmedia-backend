@@ -69,18 +69,28 @@ public class GroupServiceImpl implements GroupService {
         // Add other members if provided
         if (memberIds != null && !memberIds.isEmpty()) {
             for (UUID memberId : memberIds) {
-                if (!memberId.equals(creator.getId())) {
-                    User member = userService.getUserById(memberId);
-                    GroupMember groupMember = new GroupMember();
-                    groupMember.setGroup(savedGroup);
-                    groupMember.setUser(member);
-                    groupMember.setRole(GroupMember.MemberRole.MEMBER);
-                    groupMember.setStatus(GroupMember.MemberStatus.ACTIVE);
-                    groupMemberRepo.save(groupMember);
-                    
-                    // Send notification
-                    notificationService.sendGroupInvitationNotification(member, creator, savedGroup);
+                // Skip if creator is trying to add themselves
+                if (memberId.equals(creator.getId())) {
+                    continue; // Skip creator, already added as admin above
                 }
+                
+                // Check if user is already a member (using repository for reliable check)
+                Optional<GroupMember> existingMember = groupMemberRepo.findByGroupIdAndUserId(savedGroup.getId(), memberId);
+                if (existingMember.isPresent()) {
+                    // User already exists in group, skip
+                    continue;
+                }
+                
+                User member = userService.getUserById(memberId);
+                GroupMember groupMember = new GroupMember();
+                groupMember.setGroup(savedGroup);
+                groupMember.setUser(member);
+                groupMember.setRole(GroupMember.MemberRole.MEMBER);
+                groupMember.setStatus(GroupMember.MemberStatus.ACTIVE);
+                groupMemberRepo.save(groupMember);
+                
+                // Send notification
+                notificationService.sendGroupInvitationNotification(member, creator, savedGroup);
             }
         }
         
@@ -233,11 +243,52 @@ public class GroupServiceImpl implements GroupService {
             throw new IllegalArgumentException("You are not authorized to add members to this group");
         }
         
-        User member = userService.getUserById(memberId);
-        
-        if (group.isMember(member)) {
-            throw new IllegalArgumentException("User is already a member of this group");
+        // Check if trying to add self
+        if (memberId.equals(admin.getId())) {
+            throw new IllegalArgumentException("You cannot add yourself to the group (you are already a member as admin/creator)");
         }
+        
+        // Check if user is already a member using repository (more reliable than entity check)
+        Optional<GroupMember> existingMember = groupMemberRepo.findByGroupIdAndUserId(groupId, memberId);
+        if (existingMember.isPresent()) {
+            GroupMember member = existingMember.get();
+            if (member.getStatus() == GroupMember.MemberStatus.ACTIVE) {
+                throw new IllegalArgumentException("User is already an active member of this group");
+            } else if (member.getStatus() == GroupMember.MemberStatus.LEFT) {
+                // User left before, reactivate their membership
+                member.setStatus(GroupMember.MemberStatus.ACTIVE);
+                member.setJoinedAt(LocalDateTime.now());
+                member.setLeftAt(null);
+                group.updateLastActivity();
+                groupRepo.save(group);
+                return groupMemberRepo.save(member);
+            } else if (member.getStatus() == GroupMember.MemberStatus.REMOVED) {
+                // User was removed, allow re-adding them (admin's choice to re-invite)
+                member.setStatus(GroupMember.MemberStatus.ACTIVE);
+                member.setRole(GroupMember.MemberRole.MEMBER); // Reset to regular member
+                member.setJoinedAt(LocalDateTime.now());
+                member.setLeftAt(null);
+                group.updateLastActivity();
+                groupRepo.save(group);
+                
+                // Send notification for re-invitation
+                notificationService.sendGroupInvitationNotification(member.getUser(), admin, group);
+                
+                return groupMemberRepo.save(member);
+            } else {
+                // Other statuses (INACTIVE, PENDING) - reactivate
+                member.setStatus(GroupMember.MemberStatus.ACTIVE);
+                if (member.getJoinedAt() == null) {
+                    member.setJoinedAt(LocalDateTime.now());
+                }
+                member.setLeftAt(null);
+                group.updateLastActivity();
+                groupRepo.save(group);
+                return groupMemberRepo.save(member);
+            }
+        }
+        
+        User member = userService.getUserById(memberId);
         
         if (group.getActiveMemberCount() >= group.getMaxMembers()) {
             throw new IllegalArgumentException("Group has reached maximum member limit");

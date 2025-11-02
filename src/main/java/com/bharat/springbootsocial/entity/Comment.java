@@ -29,12 +29,12 @@ public class Comment {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", columnDefinition = "BINARY(16)")
+    @JoinColumn(name = "post_id", nullable = true, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"comments", "likedBy"})
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reel_id", columnDefinition = "BINARY(16)")
+    @JoinColumn(name = "reel_id", nullable = true, columnDefinition = "BINARY(16)")
     @JsonIgnoreProperties({"comments", "likedBy"})
     private Reels reel;
 

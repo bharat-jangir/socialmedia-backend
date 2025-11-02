@@ -35,7 +35,7 @@ public class Reels {
     )
     @JsonIgnoreProperties({"savedPosts", "following", "followers", "likedPosts"})
     private List<User> likedBy = new ArrayList<>();
-    @OneToMany(mappedBy = "reel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "reel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"user", "post", "reel"})
     private List<Comment> comments = new ArrayList<>();
     private LocalDateTime createdAt;

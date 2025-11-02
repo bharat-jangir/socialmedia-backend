@@ -48,6 +48,15 @@ public class ChatController {
         return chatService.getChatById(chatId);
     }
     
+    @DeleteMapping("{chatId}")
+    public ResponseEntity<Void> deleteChat(
+            @RequestHeader("Authorization") String token,
+            @PathVariable UUID chatId) throws ChatException {
+        User user = userService.getUserFromToken(token);
+        chatService.deleteChat(chatId, user);
+        return ResponseEntity.ok().build();
+    }
+    
     // Enhanced message endpoints
     @PostMapping("/messages")
     public ResponseEntity<EnhancedMessageResponse> sendMessage(

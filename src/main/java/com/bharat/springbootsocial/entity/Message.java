@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,8 +108,13 @@ public class Message {
     
     @PrePersist
     protected void onCreate() {
-        timestamp = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+        // Use UTC to ensure consistent timezone handling across all users
+        if (timestamp == null) {
+            timestamp = LocalDateTime.now(ZoneOffset.UTC);
+        }
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now(ZoneOffset.UTC);
+        }
         if (messageType == null) {
             messageType = MessageType.TEXT;
         }
@@ -116,18 +122,18 @@ public class Message {
     
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now(ZoneOffset.UTC);
     }
     
     public void editMessage(String newContent) {
         this.content = newContent;
         this.isEdited = true;
-        this.editedAt = LocalDateTime.now();
+        this.editedAt = LocalDateTime.now(ZoneOffset.UTC);
     }
     
     public void deleteMessage() {
         this.isDeleted = true;
-        this.deletedAt = LocalDateTime.now();
+        this.deletedAt = LocalDateTime.now(ZoneOffset.UTC);
         this.content = "This message was deleted";
     }
     

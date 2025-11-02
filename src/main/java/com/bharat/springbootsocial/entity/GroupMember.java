@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_group_members")
+@Table(name = "user_group_members", 
+       uniqueConstraints = @UniqueConstraint(columnNames = {"group_id", "user_id"}))
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

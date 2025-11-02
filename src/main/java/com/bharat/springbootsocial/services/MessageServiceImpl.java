@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +33,8 @@ public class MessageServiceImpl implements MessageServices{
         message.setImage(req.getImage());
         message.setUser(reqUser);
         message.setChat(chat);
-        message.setTimestamp(LocalDateTime.now());
+        // Use UTC to ensure consistent timezone handling across all users
+        message.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
         Message savedMessage = messageRepo.save(message);
         chat.getMessages().add(savedMessage);
         chatRepo.save(chat);

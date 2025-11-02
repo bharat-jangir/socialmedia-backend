@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -59,7 +60,8 @@ public class ChatServiceImpl implements ChatService{
         Chat chat = new Chat();
         chat.getUsers().add(user2);
         chat.getUsers().add(reqUser);
-        chat.setTimestamp(LocalDateTime.now());
+        // Use UTC to ensure consistent timezone handling
+        chat.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
 
         return chatRepo.save(chat);
     }
@@ -72,23 +74,78 @@ public class ChatServiceImpl implements ChatService{
         else
             throw new ChatException("Chat not found it with id "+chatId);
     }
+    
+    /**
+     * Get chat with users eagerly loaded (to avoid LazyInitializationException)
+     */
+    public Chat getChatByIdWithUsers(UUID chatId) throws ChatException {
+        Optional<Chat> chatOptional = chatRepo.findByIdWithUsers(chatId);
+        if(chatOptional.isPresent())
+            return chatOptional.get();
+        else
+            throw new ChatException("Chat not found it with id "+chatId);
+    }
 
     @Override
     public List<Chat> getChatsByUserId(UUID userId) {
         return chatRepo.findByUsersId(userId);
     }
     
+    @Override
+    @Transactional
+    public void deleteChat(UUID chatId, User user) throws ChatException {
+        Chat chat = getChatByIdWithUsers(chatId);
+        
+        // Check if user is part of the chat
+        boolean userIsInChat = chat.getUsers().stream()
+                .anyMatch(chatUser -> chatUser.getId().equals(user.getId()));
+        
+        if (!userIsInChat) {
+            throw new ChatException("User is not part of this chat");
+        }
+        
+        // Delete all messages in the chat first
+        List<Message> messages = messageRepo.findByChatId(chatId);
+        if (messages != null && !messages.isEmpty()) {
+            messageRepo.deleteAll(messages);
+        }
+        
+        // Delete the chat
+        chatRepo.delete(chat);
+    }
+    
     // Enhanced message operations
     @Override
     @Transactional
     public EnhancedMessageResponse sendMessage(EnhancedMessageRequest request, User user) throws ChatException {
-        Chat chat = getChatById(request.getChatId());
+        System.out.println("=== ChatServiceImpl.sendMessage() CALLED ===");
+        System.out.println("  Request chatId: " + request.getChatId());
+        System.out.println("  Request content: " + request.getContent());
+        System.out.println("  User ID: " + user.getId());
         
-        // Check if user is part of the chat
-        if (!chat.getUsers().contains(user)) {
+        Chat chat = getChatById(request.getChatId());
+        System.out.println("  Chat found: " + chat.getId());
+        System.out.println("  Chat users count: " + chat.getUsers().size());
+        
+        // Check if user is part of the chat by comparing IDs (more reliable than contains())
+        UUID userId = user.getId();
+        boolean userIsInChat = chat.getUsers().stream()
+                .anyMatch(chatUser -> chatUser.getId().equals(userId));
+        
+        System.out.println("  Checking user membership:");
+        System.out.println("    Current user ID: " + userId);
+        System.out.println("    Chat user IDs: " + chat.getUsers().stream()
+                .map(u -> u.getId().toString())
+                .collect(java.util.stream.Collectors.joining(", ")));
+        System.out.println("    User is in chat: " + userIsInChat);
+        
+        if (!userIsInChat) {
+            System.err.println("❌ User is not part of this chat");
             throw new ChatException("User is not part of this chat");
         }
+        System.out.println("  ✓ User is part of the chat");
         
+        System.out.println("Creating Message entity...");
         Message message = new Message();
         message.setContent(request.getContent());
         message.setImage(request.getImageUrl());
@@ -100,6 +157,10 @@ public class ChatServiceImpl implements ChatService{
         message.setUser(user);
         message.setChat(chat);
         
+        System.out.println("  Message content set: " + message.getContent());
+        System.out.println("  Message user set: " + message.getUser().getId());
+        System.out.println("  Message chat set: " + message.getChat().getId());
+        
         // Handle reply to message
         if (request.getReplyToId() != null) {
             Optional<Message> replyToMessage = messageRepo.findById(request.getReplyToId());
@@ -108,8 +169,47 @@ public class ChatServiceImpl implements ChatService{
             }
         }
         
-        Message savedMessage = messageRepo.save(message);
-        return EnhancedMessageResponse.fromEntity(savedMessage);
+        System.out.println("Saving message to database using messageRepo.saveAndFlush()...");
+        try {
+            // Use saveAndFlush to ensure immediate database write
+            Message savedMessage = messageRepo.saveAndFlush(message);
+            System.out.println("✓ Message entity saved and flushed, ID: " + (savedMessage.getId() != null ? savedMessage.getId() : "NULL"));
+            
+            // Verify the message was saved by checking it exists
+            if (savedMessage.getId() != null) {
+                Optional<Message> verifyMessage = messageRepo.findById(savedMessage.getId());
+                if (verifyMessage.isPresent()) {
+                    System.out.println("✓✓✓ VERIFIED: Message exists in database ✓✓✓");
+                    Message verified = verifyMessage.get();
+                    System.out.println("  Verified message content: " + verified.getContent());
+                    System.out.println("  Verified message chat ID: " + verified.getChat().getId());
+                    System.out.println("  Verified message user ID: " + verified.getUser().getId());
+                } else {
+                    System.err.println("❌ WARNING: Message saved but not found when verifying!");
+                }
+            } else {
+                System.err.println("❌ ERROR: Saved message has NULL ID!");
+            }
+            
+            System.out.println("✓✓✓ MESSAGE SAVED TO DATABASE IN REPOSITORY ✓✓✓");
+            System.out.println("  Saved message ID: " + savedMessage.getId());
+            System.out.println("  Saved message content: " + savedMessage.getContent());
+            System.out.println("  Saved message timestamp: " + savedMessage.getTimestamp());
+            System.out.println("  Saved message chat ID: " + savedMessage.getChat().getId());
+            System.out.println("  Saved message user ID: " + savedMessage.getUser().getId());
+            
+            EnhancedMessageResponse response = EnhancedMessageResponse.fromEntity(savedMessage);
+            System.out.println("  Response created with ID: " + response.getId());
+            
+            return response;
+        } catch (Exception e) {
+            System.err.println("❌❌❌ EXCEPTION DURING messageRepo.saveAndFlush() ❌❌❌");
+            System.err.println("Exception type: " + e.getClass().getName());
+            System.err.println("Exception message: " + e.getMessage());
+            System.err.println("Stack trace:");
+            e.printStackTrace();
+            throw e;
+        }
     }
     
     @Override

@@ -156,6 +156,7 @@ public class ReelsServiceImpl implements ReelsService{
         Comment comment = new Comment();
         comment.setContent(content);
         comment.setUser(user);
+        comment.setReel(reel); // Explicitly set the reel relationship for binary UUID foreign key
         comment.setCreatedAt(java.time.LocalDateTime.now());
         
         // Save the comment first to get the ID
